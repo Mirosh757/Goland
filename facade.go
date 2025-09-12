@@ -17,7 +17,17 @@ func facade(){
 		fmt.Scan(&action)
 		switch (action){
 			case "1":
+				createAnimals()
+			case "2":
 				readAllAnimals()
+			case "3":
+				readOneAnimals()
+			case "4":
+				updateAnimals()
+			case "5":
+				deleteOneAnimals()
+			case "6":
+				deleteManyAnimals()
 		}
 	}
 }

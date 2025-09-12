@@ -32,14 +32,14 @@ func ConnectionDatabase() bool {
 
 func createTable(database *sql.DB) bool {
 	createSQL := `
-		CREATE TABLE animals(
+		CREATE TABLE IF NOT EXISTS animals(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name VARCHAR(100) NOT NULL,
 		type_animals VARCHAR(20) NOT NULL,
 		breed VARCHAR(120) NOT NULL,
 		age INTEGER,
 		gender VARCHAR(7),
-		color VARCHAR(30))
+		color VARCHAR(30));
 	`
 	statement, err := database.Prepare(createSQL)
 	if err != nil {
@@ -57,20 +57,26 @@ func createTable(database *sql.DB) bool {
 	return true
 }
 
-func insertTable(database *sql.DB){
-	insertSQL := `
-    INSERT INTO animals (name, type_animals, breed, age, gender, color) 
-    VALUES 
-        ('Барсик', 'cat', 'британец', 3, 'male', 'серый'),
-        ('Муся', 'cat', 'сиамская', 2, 'female', 'белый'),
-        ('Шарик', 'dog', 'овчарка', 5, 'male', 'черный'),
-        ('Рекс', 'dog', 'дворняжка', 4, 'male', 'рыжий')
-    `
-	result, err := database.Exec(insertSQL)
-	if err != nil{
-		fmt.Println("Неправильный запрос на вставку")
-	} else{
-		rowAffected, _ := result.RowsAffected()
-		fmt.Printf("Добавлено %d строк\n", rowAffected)
+func insertTable(database *sql.DB) {
+	query, err := database.Query("SELECT * FROM animals")
+	if err != nil {
+		fmt.Println(err)
+	}
+	if !query.Next() {
+		insertSQL := `
+			INSERT INTO animals (name, type_animals, breed, age, gender, color) 
+			VALUES 
+			('Барсик', 'cat', 'британец', 3, 'male', 'серый'),
+			('Муся', 'cat', 'сиамская', 2, 'female', 'белый'),
+			('Шарик', 'dog', 'овчарка', 5, 'male', 'черный'),
+			('Рекс', 'dog', 'дворняжка', 4, 'male', 'рыжий')
+		`
+		result, err := database.Exec(insertSQL)
+		if err != nil {
+			fmt.Println("Неправильный запрос на вставку")
+		} else {
+			rowAffected, _ := result.RowsAffected()
+			fmt.Printf("Добавлено %d строк\n", rowAffected)
+		}
 	}
 }
