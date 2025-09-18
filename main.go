@@ -1,15 +1,18 @@
 package main
 
 import (
-	"Goland/database"
 	"fmt"
+	"Goland/console"
+	"Goland/web"
 )
 
 func main() {
-	var statusDatabase bool = database.ConnectionDatabase()
-	if !statusDatabase{
-		fmt.Println("Ошибка во время подключения к базе")
-	}else{
-		facade()
+	var action string
+	fmt.Print("1. Запустить Веб-приложение\n2. Запустить консольное приложение\nДействие: ")
+	fmt.Scan(&action)
+	if action == "1"{
+		web.RunServer()
+	} else{
+		console.Facade()
 	}
 }

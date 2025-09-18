@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Animals</title>
+    <p><a href="/create">Добавить</a></p>
+</head>
+<body>
+    <table border="1" cellpadding="10" cellspacing="0" width="50%" style="font-size: 16px;">
+        <thead>
+            <tr>
+                <th>Id</th><th>Name</th><th>Type animals</th><th>Breed</th>
+                <th>Age</th><th>Gender</th><th>Color</th><th>Update</th><th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .}}
+            <tr>
+                <td>{{.Id}}</td>
+                <td>{{.Name}}</td>
+                <td>{{.TypeAnimals}}</td>
+                <td>{{.Breed}}</td>
+                <td>{{.Age}}</td>
+                <td>{{.Gender}}</td>
+                <td>{{.Color}}</td>
+                <td><a href="/edit/{{.Id}}">Изменить</a></td>
+                <td><a href="/delete/{{.Id}}">Удалить</a></td>
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="7" style="padding: 30px; text-align: center;">No animals found</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</body>
+</html>
