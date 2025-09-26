@@ -1,0 +1,106 @@
+index
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Animals</title>
+    <p><a href="/create" target="_blank">Добавить</a></p>
+</head>
+<body>
+    <table border="1" cellpadding="10" cellspacing="0" width="50%" style="font-size: 16px;">
+        <thead>
+            <tr>
+                <th>Id</th><th>Name</th><th>Type animals</th><th>Breed</th>
+                <th>Age</th><th>Gender</th><th>Color</th><th>Update</th><th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .}}
+            <tr>
+                <td>{{.Id}}</td>
+                <td>{{.Name}}</td>
+                <td>{{.TypeAnimals}}</td>
+                <td>{{.Breed}}</td>
+                <td>{{.Age}}</td>
+                <td>{{.Gender}}</td>
+                <td>{{.Color}}</td>
+                <td><a href="/edit/{{.Id}}" target="_blank">Изменить</a></td>
+                <td><a href="/delete/{{.Id}}">Удалить</a></td>
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="7" style="padding: 30px; text-align: center;">No animals found</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</body>
+</html>
+
+edit
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Edt Animal</title>
+    </head>
+    <body>
+        <h3>Edit Animal</h3>
+        <form method="POST">
+            <input type="hidden" name="id" value="{{.Id}}" />
+            <label>Name</label><br>
+            <input type="text" name="name" value="{{.Name}}" /><br><br>
+            <label>Type animal</label><br>
+            <input type="text" name="type_animals" value="{{.TypeAnimals}}" /><br><br>
+            <label>Breed</label><br>
+            <input type="text" name="breed" value="{{.Breed}}" /><br><br>
+            <label>Age</label><br>
+            <input type="number" name="age" value="{{.Age}}" /><br><br>
+            <label>Gender</label><br>
+            <select name="gender" required>
+                <option value="">-- Select Gender --</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select><br><br>
+            <label>Color</label><br>
+            <input type="text" name="color" value="{{.Color}}" /><br><br>
+            <input type="submit" value="Send" />
+        </form>
+    </body>
+</html>
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>New Animal</title>
+    </head>
+    <body>
+        <h3>Add Animal</h3>
+        <form method="POST">
+            <label>Name</label><br>
+            <input type="text" name="name" required /><br><br>
+            
+            <label>Type animals</label><br>
+            <input type="text" name="type_animals" required /><br><br>
+            
+            <label>Breed</label><br>
+            <input type="text" name="breed" required /><br><br>
+            
+            <label>Age</label><br>
+            <input type="number" name="age" min="0" required /><br><br>
+            
+            <label>Gender</label><br>
+            <select name="gender" required>
+                <option value="">-- Select Gender --</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select><br><br>
+            
+            <label>Color</label><br>
+            <input type="text" name="color" required /><br><br>
+            
+            <input type="submit" value="Send" />
+        </form>
+    </body>
+</html>

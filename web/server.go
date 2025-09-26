@@ -25,7 +25,7 @@ var db *sql.DB
 func DeleteHandler(w http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
     id := vars["id"]
- 
+    fmt.Printf("Id объекта для удаления: %s", id)
     _, err := db.Exec("DELETE FROM animals WHERE id = ?", id)
     if err != nil{
         log.Println(err)
@@ -99,6 +99,19 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
     }else{
         http.ServeFile(w,r, "templates/create.html")
     }
+    // После успешного создания животного
+    fmt.Fprintf(w, `
+    <script>
+        window.onload = function() {
+            setTimeout(() => window.close(), 300);
+        }
+    </script>
+    <div style="text-align: center; padding: 50px;">
+        <h3>Животное успешно добавлено!</h3>
+        <p>Окно закроется автоматически...</p>
+        <button onclick="window.close()">Закрыть сейчас</button>
+    </div>
+    `)
 }
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {

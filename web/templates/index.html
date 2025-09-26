@@ -1,37 +1,269 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Animals</title>
-    <p><a href="/create">Добавить</a></p>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            margin: 2px;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                min-width: auto;
+            }
+        }
+    </style>
 </head>
 <body>
-    <table border="1" cellpadding="10" cellspacing="0" width="50%" style="font-size: 16px;">
-        <thead>
-            <tr>
-                <th>Id</th><th>Name</th><th>Type animals</th><th>Breed</th>
-                <th>Age</th><th>Gender</th><th>Color</th><th>Update</th><th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{range .}}
-            <tr>
-                <td>{{.Id}}</td>
-                <td>{{.Name}}</td>
-                <td>{{.TypeAnimals}}</td>
-                <td>{{.Breed}}</td>
-                <td>{{.Age}}</td>
-                <td>{{.Gender}}</td>
-                <td>{{.Color}}</td>
-                <td><a href="/edit/{{.Id}}">Изменить</a></td>
-                <td><a href="/delete/{{.Id}}">Удалить</a></td>
-            </tr>
-            {{else}}
-            <tr>
-                <td colspan="7" style="padding: 30px; text-align: center;">No animals found</td>
-            </tr>
-            {{end}}
-        </tbody>
-    </table>
+    <div class="container">
+        <h1>Animal Management</h1>
+        
+        <div class="controls">
+            <a href="/create" target="_blank" class="btn btn-primary">Add New Animal</a>
+            
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search animals...">
+            </div>
+        </div>
+
+        <div class="filters">
+            <select id="typeFilter" class="filter-select">
+                <option value="">All Types</option>
+                <option value="dog">Dog</option>
+                <option value="cat">Cat</option>
+                <option value="bird">Bird</option>
+            </select>
+            
+            <select id="genderFilter" class="filter-select">
+                <option value="">All Genders</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            
+            <select id="ageFilter" class="filter-select">
+                <option value="">All Ages</option>
+                <option value="0-1">0-1 years</option>
+                <option value="1-5">1-5 years</option>
+                <option value="5+">5+ years</option>
+            </select>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Breed</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Color</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="animalTable">
+                {{range .}}
+                <tr>
+                    <td>{{.Id}}</td>
+                    <td>{{.Name}}</td>
+                    <td>{{.TypeAnimals}}</td>
+                    <td>{{.Breed}}</td>
+                    <td>{{.Age}}</td>
+                    <td>{{.Gender}}</td>
+                    <td>{{.Color}}</td>
+                    <td>
+                        <a href="/edit/{{.Id}}" target="_blank" class="btn btn-warning btn-sm">Изменить</a>
+                        <a href="/delete/{{.Id}}" class="btn btn-danger btn-sm">Удалить</a>
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="8" class="no-data">No animals found</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function filterAnimals() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value.toLowerCase();
+            const genderFilter = document.getElementById('genderFilter').value.toLowerCase();
+            const ageFilter = document.getElementById('ageFilter').value;
+            
+            const rows = document.querySelectorAll('#animalTable tr');
+            
+            rows.forEach(row => {
+                if (row.cells.length < 7) return;
+                
+                const name = row.cells[1].textContent.toLowerCase();
+                const type = row.cells[2].textContent.toLowerCase();
+                const breed = row.cells[3].textContent.toLowerCase();
+                const age = parseInt(row.cells[4].textContent);
+                const gender = row.cells[5].textContent.toLowerCase();
+                const color = row.cells[6].textContent.toLowerCase();
+                
+                let matchesSearch = searchText === '' || 
+                    name.includes(searchText) || 
+                    type.includes(searchText) || 
+                    breed.includes(searchText) || 
+                    color.includes(searchText);
+                    
+                let matchesType = typeFilter === '' || type.includes(typeFilter);
+                let matchesGender = genderFilter === '' || gender.includes(genderFilter);
+                let matchesAge = ageFilter === '' || checkAgeFilter(age, ageFilter);
+                
+                if (matchesSearch && matchesType && matchesGender && matchesAge) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        function checkAgeFilter(age, filter) {
+            switch(filter) {
+                case '0-1': return age >= 0 && age <= 1;
+                case '1-5': return age > 1 && age <= 5;
+                case '5+': return age > 5;
+                default: return true;
+            }
+        }
+        
+        document.getElementById('searchInput').addEventListener('input', filterAnimals);
+        document.getElementById('typeFilter').addEventListener('change', filterAnimals);
+        document.getElementById('genderFilter').addEventListener('change', filterAnimals);
+        document.getElementById('ageFilter').addEventListener('change', filterAnimals);
+    </script>
 </body>
 </html>
